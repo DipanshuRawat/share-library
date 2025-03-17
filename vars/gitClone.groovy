@@ -5,7 +5,7 @@ def call(String repoUrl, String branchName = 'main', String credentialsId = 'Cre
         checkout([
             $class: 'GitSCM',
             branches: [[name: branchName]],
-            userRemoteConfigs: [[url: 'https://github.com/Snaatak-Skyops/attendance-api.git', credentialsId: credentialsId]]
+            userRemoteConfigs: [[url: repoUrl, credentialsId: credentialsId]]
         ])
     }
 }
