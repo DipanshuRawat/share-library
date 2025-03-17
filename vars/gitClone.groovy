@@ -1,11 +1,11 @@
 // vars/gitClone.groovy
 
-def call(String repoUrl, String branchName = 'main', String credentialsId = '0a860cc7-b888-40a5-ac79-f7592861d769') {
+def call(String repoUrl, String branchName = 'main', String credentialsId = 'Cred') {
     stage('Git Clone') {
         checkout([
             $class: 'GitSCM',
             branches: [[name: branchName]],
-            userRemoteConfigs: [[url: repoUrl, credentialsId: credentialsId]]
+            userRemoteConfigs: [[url: 'https://github.com/Snaatak-Skyops/attendance-api.git', credentialsId: credentialsId]]
         ])
     }
 }
