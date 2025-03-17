@@ -1,6 +1,10 @@
-// vars/notification.groovy
+// vars/sendNotification.groovy
 
-def call(String recipientEmail, String status, String gitleaksReportName = "gitleaks-report.json") {
+def call(Map config) {
+    def recipientEmail = config.recipientEmail
+    def status = config.status
+    def gitleaksReportName = config.gitleaksReportName ?: "gitleaks-report.json" // Default report name
+
     def subject = "Jenkins Build ${status}: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
     def body = """Hello,
 
