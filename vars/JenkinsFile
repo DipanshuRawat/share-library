@@ -1,0 +1,80 @@
+@Library('my-Library')_
+
+pipeline {
+    agent any
+
+    environment {
+        REPO_URL = 'https://github.com/Snaatak-Skyops/attendance-api.git'
+        BRANCH_NAME = 'main'
+        GITLEAKS_REPORT_NAME = "gitleaks-report.json"
+        RECIPIENT_EMAIL = 'princerawat2108@gmail.com'
+        CREDENTIALS_ID = 'Cred'
+    }
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                script {
+                    cleanWorkspace()
+                }
+            }
+        }
+
+        stage('Git Clone') {
+            steps {
+                script {
+                    gitClone(
+                        repoUrl: env.REPO_URL,
+                        branchName: env.BRANCH_NAME,
+                        credentialsId: env.CREDENTIALS_ID
+                    )
+                }
+            }
+        }
+
+        stage('Download and Install Gitleaks') {
+            steps {
+                script {
+                    downloadAndInstallGitleaks()
+                }
+            }
+        }
+
+        stage('Gitleaks Scan') {
+            steps {
+                script {
+                    runGitleaksScan(gitleaksReportName: env.GITLEAKS_REPORT_NAME)
+                }
+            }
+        }
+
+        stage('Publish Gitleaks Report') {
+            steps {
+                script {
+                    publishGitleaksReport(gitleaksReportName: env.GITLEAKS_REPORT_NAME)
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                sendNotification(
+                    recipientEmail: env.RECIPIENT_EMAIL,
+                    status: 'SUCCESS',
+                    gitleaksReportName: env.GITLEAKS_REPORT_NAME
+                )
+            }
+        }
+        failure {
+            script {
+                sendNotification(
+                    recipientEmail: env.RECIPIENT_EMAIL,
+                    status: 'FAILURE',
+                    gitleaksReportName: env.GITLEAKS_REPORT_NAME
+                )
+            }
+        }
+    }
+}
